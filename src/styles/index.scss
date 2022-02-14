@@ -124,3 +124,32 @@ table {
   border-collapse: collapse;
   border-spacing: 0;
 }
+
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font: 14px/1.5 Helvetica, sans-serif, STHeiTi;
+  color: #333;
+}
+
+.main {
+  overflow: hidden;
+  flex: 1;
+}
+
+a {
+  text-decoration: none;
+  color: #333;
+}
+
+.fade-enter {
+  opacity: 0;
+}
+
+.fade-enter-active {
+  transition: opacity 0.5s;
+}
