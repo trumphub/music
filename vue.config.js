@@ -23,5 +23,8 @@ module.exports = {
                 ]
             }
         }
+    },
+    devServer: {
+        proxy: 'https://netease-cloud-music-api-liard-kappa.vercel.app'
     }
 }
