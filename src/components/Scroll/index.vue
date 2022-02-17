@@ -36,6 +36,9 @@ export default {
         scrollY: this.scrollY,
       });
     },
+    refresh() {
+      this.scroll && this.scroll.refresh();
+    },
   },
   mounted() {
     this.init();
