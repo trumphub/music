@@ -1,5 +1,5 @@
 <template>
-  <div class="loading-container">
+  <div class="loading-container" :class="loadingType">
     <div class="loading">
       <span></span>
       <span></span>
@@ -13,6 +13,12 @@
 <script>
 export default {
   name: "Loading",
+  props: {
+    loadingType: {
+      type: String,
+      default: "normal",
+    },
+  },
 };
 </script>
 
@@ -20,18 +26,29 @@ export default {
 @import "../../styles/variables.scss";
 
 .loading-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.3);
+  &.normal {
+    .loading {
+      justify-content: center;
+    }
+  }
+  &.fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    .loading {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
+
   .loading {
     display: flex;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     span {
       width: 5px;
       height: 30px;

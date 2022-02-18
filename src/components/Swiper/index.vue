@@ -4,15 +4,15 @@
       <div class="slide-content">
         <div class="slide-page" v-for="(item, index) in list" :key="index">
           <img
+            v-if="item.pic"
             @click="handleClick(item)"
-            @load="loadImage"
             :src="item.pic"
             alt=""
           />
         </div>
       </div>
     </div>
-    <div class="dots-wrapper" v-if="count === list.length">
+    <div class="dots-wrapper">
       <span
         class="dot"
         v-for="num in this.list.length"
@@ -33,7 +33,6 @@ export default {
   data() {
     return {
       currentPageIndex: 0,
-      count: 0,
     };
   },
   props: {
@@ -56,15 +55,14 @@ export default {
         this.currentPageIndex = page.pageX;
       });
     },
-    loadImage() {
-      this.count += 1;
-      if (this.count === this.list.length) {
-        this.init();
-      }
-    },
     handleClick(item) {
       console.log(item);
     },
+  },
+  mounted() {
+    this.$nextTick(() => {
+      this.init();
+    });
   },
   beforeDestroy() {
     this.swiper.destroy();
@@ -84,9 +82,12 @@ export default {
       .slide-page {
         flex: none;
         width: 375px;
+        height: 146px;
+        background-color: #eee;
         img {
           display: block;
           width: 375px;
+          height: 146px;
         }
       }
     }

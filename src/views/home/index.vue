@@ -1,15 +1,9 @@
 <template>
   <div class="main">
-    <scroll ref="scroll-one">
+    <scroll :data="personalized">
       <div>
-        <swiper v-if="bannerList.length" :list="bannerList" />
-        <scroll
-          ref="scroll-two"
-          :scrollX="true"
-          :scrollY="false"
-          :data="iconList"
-          :click="false"
-        >
+        <swiper :list="bannerList" />
+        <scroll :scrollX="true" :scrollY="false" :click="false">
           <div class="tab">
             <router-link
               v-for="item in iconList"
@@ -17,14 +11,17 @@
               to="/rank"
               class="tab-item"
             >
-              <div class="img-wrapper">
-                <img :src="item.iconUrl" alt="" />
+              <div
+                class="img-wrapper"
+                :class="{ 'show-image': !!item.iconUrl }"
+              >
+                <img v-if="!!item.iconUrl" :src="item.iconUrl" alt="" />
               </div>
               <span v-text="item.name"></span>
             </router-link>
           </div>
         </scroll>
-        <div class="personalized-list" v-if="!!personalized.length">
+        <div class="personalized-list">
           <h1>推荐歌单</h1>
           <ul class="list">
             <li class="item" v-for="item in personalized" :key="item.id">
@@ -38,10 +35,10 @@
               <span class="title ellipsis-2" v-text="item.name"></span>
             </li>
           </ul>
+          <loading v-if="!personalized.length" />
         </div>
       </div>
     </scroll>
-    <loading v-if="loading" />
   </div>
 </template>
 
@@ -57,11 +54,22 @@ export default {
     Swiper,
   },
   data() {
+    const bannerList = [];
+    for (let i = 0; i < 11; i++) {
+      bannerList.push({ pic: "" });
+    }
+    const iconList = [];
+    for (let i = 0; i < 9; i++) {
+      iconList.push({
+        id: i,
+        iconUrl: "",
+        name: "",
+      });
+    }
     return {
-      bannerList: [],
-      iconList: [],
+      bannerList,
+      iconList,
       personalized: [],
-      loading: true,
     };
   },
   created() {
@@ -84,11 +92,6 @@ export default {
       await this._reqBannerList();
       await this._reqIconList();
       await this._reqPersonalized();
-      this.$nextTick(() => {
-        this.$refs["scroll-two"].refresh();
-        this.$refs["scroll-one"].refresh();
-      });
-      this.loading = false;
     },
   },
 };
@@ -113,7 +116,10 @@ export default {
       height: 40px;
       overflow: hidden;
       border-radius: 50%;
-      background-color: $primary-color;
+      background-color: #eee;
+      &.show-image {
+        background-color: $primary-color;
+      }
       img {
         width: 100%;
         height: 100%;

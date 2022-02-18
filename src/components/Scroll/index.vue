@@ -26,6 +26,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    data: {
+      type: Array,
+      default: null,
+    },
   },
   methods: {
     init() {
@@ -42,6 +46,13 @@ export default {
   },
   mounted() {
     this.init();
+  },
+  watch: {
+    data() {
+      this.$nextTick(() => {
+        this.refresh();
+      });
+    },
   },
 };
 </script>
