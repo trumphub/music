@@ -1,12 +1,17 @@
 import axios from "axios"
 
-const service = axios.create({})
+const cancelList = []
 
-service.interceptors.request.use(config => {
+axios.interceptors.request.use(config => {
+    config.cancelToken = new axios.CancelToken(
+        cancel => {
+            cancelList.push(cancel)
+        }
+    )
     return config
 }, error => Promise.reject(error))
 
-service.interceptors.response.use(response => {
+axios.interceptors.response.use(response => {
     const res = response.data
     if (res.code !== 200) {
         return Promise.reject(new Error(res.message || 'Error'))
@@ -14,7 +19,14 @@ service.interceptors.response.use(response => {
         return res
     }
 }, error => {
-    return Promise.reject(error)
+    if (axios.isCancel(error)) {
+        console.log(error.message);
+        return new Promise(() => { })
+    } else {
+        return Promise.reject(error)
+    }
 })
 
-export default service
+export { cancelList }
+
+export default axios

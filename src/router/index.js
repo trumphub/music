@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
+import { cancelList } from '../util/request'
 import Layout from '../layout'
 
 Vue.use(VueRouter)
@@ -42,6 +43,13 @@ const routes = [
 const router = new VueRouter({
     routes,
     mode: 'history'
+})
+
+router.beforeEach(function (to, from, next) {
+    while (cancelList.length > 0) {
+        cancelList.shift()('取消未完成的请求')
+    }
+    next()
 })
 
 export default router

@@ -30,6 +30,10 @@ export default {
       type: Array,
       default: null,
     },
+    scrollEnd: {
+      type: Function,
+      default: null,
+    },
   },
   methods: {
     init() {
@@ -39,6 +43,9 @@ export default {
         scrollX: this.scrollX,
         scrollY: this.scrollY,
       });
+      if (this.scrollEnd) {
+        this.scroll.on("scrollEnd", this.scrollEnd);
+      }
     },
     refresh() {
       this.scroll && this.scroll.refresh();
