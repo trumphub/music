@@ -29,6 +29,8 @@ export default {
   padding: 0 10px;
   color: #fff;
   background-color: $primary-color;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
+  z-index: 9;
   .left,
   .right {
     display: flex;

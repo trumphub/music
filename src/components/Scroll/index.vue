@@ -6,6 +6,8 @@
 
 <script>
 import BScroll from "@better-scroll/core";
+import Pullup from "@better-scroll/pull-up";
+BScroll.use(Pullup);
 
 export default {
   name: "Scroll",
@@ -34,6 +36,18 @@ export default {
       type: Function,
       default: null,
     },
+    pullUpLoad: {
+      type: Boolean,
+      default: false,
+    },
+    pullingUpHandler: {
+      type: Function,
+      default: null,
+    },
+    scrolling: {
+      type: Boolean,
+      default: false,
+    },
   },
   methods: {
     init() {
@@ -42,13 +56,28 @@ export default {
         click: this.click,
         scrollX: this.scrollX,
         scrollY: this.scrollY,
+        pullUpLoad: this.pullUpLoad,
       });
       if (this.scrollEnd) {
         this.scroll.on("scrollEnd", this.scrollEnd);
       }
+      if (this.pullUpLoad) {
+        this.scroll.on("pullingUp", async () => {
+          await this.pullingUpHandler();
+          this.scroll.finishPullUp();
+        });
+      }
+      if (this.scrolling) {
+        this.scroll.on("scroll", (pos) => {
+          this.$emit("scroll", pos);
+        });
+      }
     },
     refresh() {
       this.scroll && this.scroll.refresh();
+    },
+    scrollToElement() {
+      this.scroll && this.scroll.scrollToElement(...arguments);
     },
   },
   mounted() {

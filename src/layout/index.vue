@@ -1,7 +1,9 @@
 <template>
   <div class="layout">
     <my-header />
-    <router-view />
+    <transition name="fade" mode="out-in">
+      <router-view />
+    </transition>
     <my-nav />
   </div>
 </template>

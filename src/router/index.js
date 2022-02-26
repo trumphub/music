@@ -15,25 +15,13 @@ const routes = [
             {
                 path: 'home',
                 component: () => import('../views/home')
-            }
-        ]
-    },
-    {
-        path: '/rank',
-        component: Layout,
-        children: [
+            },
             {
-                path: '',
+                path: 'rank',
                 component: () => import('../views/rank')
-            }
-        ]
-    },
-    {
-        path: '/singer',
-        component: Layout,
-        children: [
+            },
             {
-                path: '',
+                path: 'singer',
                 component: () => import('../views/singer')
             }
         ]
