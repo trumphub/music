@@ -36,6 +36,10 @@
           </li>
         </ul>
       </div>
+      <!-- 标题固定 -->
+      <div class="title-fixed" ref="fixed">
+        <span>{{ title }}</span>
+      </div>
       <loading v-if="!list.length" />
     </scroll>
   </div>
@@ -55,7 +59,36 @@ export default {
       currentIndex: 0,
       keyList: [],
       listHeight: [0],
+      scrollY: 0,
     };
+  },
+  watch: {
+    scrollY(y) {
+      for (let i = 1; i < this.listHeight.length; i++) {
+        const start = -this.listHeight[i - 1];
+        const end = -this.listHeight[i];
+        const _start = end + this.fixedHeight;
+        if (y > end && y <= start) {
+          this.currentIndex = i - 1;
+        }
+        if (y > 0) {
+          this.$refs.fixed.style.display = "none";
+        } else {
+          this.$refs.fixed.style.display = "block";
+        }
+        if (y <= _start && y >= end) {
+          this.$refs.fixed.style.transform = `translate3d(0,${y - _start}px,0)`;
+        }
+      }
+    },
+    currentIndex() {
+      this.$refs.fixed.style.transform = `translate3d(0,0,0)`;
+    },
+  },
+  computed: {
+    title() {
+      return this.keyList[this.currentIndex];
+    },
   },
   mounted() {
     this.init();
@@ -70,6 +103,7 @@ export default {
         const keyContainer = this.$refs.keyContainer;
         this._top = keyContainer.getBoundingClientRect().top;
         this._height = keyContainer.getElementsByTagName("li")[0].offsetHeight;
+        this.fixedHeight = this.$refs.fixed.offsetHeight;
       });
     },
     normalizeSinger(list) {
@@ -107,13 +141,7 @@ export default {
       return res;
     },
     scroll({ y }) {
-      for (let i = 1; i < this.listHeight.length; i++) {
-        const start = -this.listHeight[i - 1];
-        const end = -this.listHeight[i];
-        if (y > end && y <= start) {
-          this.currentIndex = i - 1;
-        }
-      }
+      this.scrollY = y;
     },
     calculateHeight() {
       let height = 0;
@@ -199,5 +227,17 @@ h2 {
       }
     }
   }
+}
+
+.title-fixed {
+  position: absolute;
+  top: 44px;
+  left: 0;
+  width: 100%;
+  background-color: #e4e4e4;
+  font-size: 12px;
+  color: #fff;
+  text-align: center;
+  line-height: 25px;
 }
 </style>
