@@ -1,7 +1,7 @@
 <template>
   <transition appear name="fade">
     <div class="header">
-      <div class="left">
+      <div class="left" @click="show">
         <i class="iconfont icon-menu"></i>
       </div>
       <div class="center">
@@ -17,6 +17,11 @@
 <script>
 export default {
   name: "Header",
+  methods: {
+    show() {
+      this.$emit("show");
+    },
+  },
 };
 </script>
 

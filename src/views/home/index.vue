@@ -51,10 +51,7 @@ export default {
     PersonalizedItem,
   },
   data() {
-    const bannerList = [];
-    for (let i = 0; i < 11; i++) {
-      bannerList.push({ pic: "" });
-    }
+    const bannerList = Array(11).fill({ pic: "" });
     const iconList = [];
     for (let i = 0; i < 9; i++) {
       iconList.push({

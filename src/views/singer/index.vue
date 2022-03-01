@@ -47,7 +47,6 @@
 
 <script>
 import Scroll from "@/components/Scroll";
-import Loading from "@/components/Loading";
 import { reqSingers } from "@/api/singer";
 import Pinyin from "pinyin";
 
@@ -165,7 +164,6 @@ export default {
   },
   components: {
     Scroll,
-    Loading,
   },
 };
 </script>
