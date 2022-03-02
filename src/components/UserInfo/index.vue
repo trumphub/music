@@ -1,5 +1,5 @@
 <template>
-  <transition name="move" appear>
+  <transition appear>
     <div class="user-info">
       <!-- 背景图 -->
       <div class="bg" :style="{ backgroundImage }"></div>
@@ -88,8 +88,10 @@ export default {
     },
     toLogin() {
       this.$emit("close");
-      this.$router.push({
-        path: "/login",
+      this.$el.addEventListener("transitionend", () => {
+        this.$router.push({
+          path: "/login",
+        });
       });
     },
     _getUserPlayList(uid) {
@@ -114,8 +116,10 @@ export default {
       this.$store.dispatch("logout").then(() => {
         this.logoutStatus = false;
         this.$emit("close");
-        this.$router.push({ path: "/" });
         this.$toast("注销成功");
+        this.$el.addEventListener("transitionend", () => {
+          this.$router.push({ path: "/" });
+        });
       });
     },
   },

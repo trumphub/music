@@ -1,20 +1,18 @@
 <template>
-  <transition appear name="fade">
-    <div class="nav">
-      <router-link class="left" to="/home">
-        <i class="iconfont icon-home"></i>
-        <span>首页</span>
-      </router-link>
-      <router-link class="center" to="/rank">
-        <i class="iconfont icon-chart-bar"></i>
-        <span>排行</span>
-      </router-link>
-      <router-link class="right" to="/singer">
-        <i class="iconfont icon-favorite"></i>
-        <span>歌手</span>
-      </router-link>
-    </div>
-  </transition>
+  <div class="nav">
+    <router-link class="left" to="/home">
+      <i class="iconfont icon-home"></i>
+      <span>首页</span>
+    </router-link>
+    <router-link class="center" to="/rank">
+      <i class="iconfont icon-chart-bar"></i>
+      <span>排行</span>
+    </router-link>
+    <router-link class="right" to="/singer">
+      <i class="iconfont icon-favorite"></i>
+      <span>歌手</span>
+    </router-link>
+  </div>
 </template>
 
 <script>

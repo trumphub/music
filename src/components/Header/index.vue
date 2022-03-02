@@ -1,17 +1,15 @@
 <template>
-  <transition appear name="fade">
-    <div class="header">
-      <div class="left" @click="show">
-        <i class="iconfont icon-menu"></i>
-      </div>
-      <div class="center">
-        <span>网易云音乐</span>
-      </div>
-      <div class="right">
-        <i class="iconfont icon-search"></i>
-      </div>
+  <div class="header">
+    <div class="left" @click="show">
+      <i class="iconfont icon-menu"></i>
     </div>
-  </transition>
+    <div class="center">
+      <span>网易云音乐</span>
+    </div>
+    <div class="right">
+      <i class="iconfont icon-search"></i>
+    </div>
+  </div>
 </template>
 
 <script>
