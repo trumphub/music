@@ -1,5 +1,5 @@
 <template>
-  <div class="screen" :style="{ backgroundColor }" @click.self="hideBox">
+  <div class="screen">
     <!-- logo -->
     <div class="top">
       <img src="https://y.qq.com/mediastyle/mod/mobile/img/logo.svg" alt="" />
@@ -11,6 +11,7 @@
       <button class="register" @click="register">注册</button>
       <span @click="$router.replace('/')">游客试用</span>
     </div>
+    <div class="mask" @click.self="hideBox" v-show="!!currentComponent"></div>
     <transition name="fade">
       <component :is="currentComponent" />
     </transition>
@@ -43,11 +44,6 @@ export default {
       this.currentComponent = "";
     },
   },
-  computed: {
-    backgroundColor() {
-      return this.currentComponent ? "#f6f6f6" : "#ffffff";
-    },
-  },
 };
 </script>
 
@@ -60,7 +56,7 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: calc(100vh / 8) 0;
-  transition: background 0.5s;
+  background-color: #fff;
   .top {
     display: flex;
     flex-direction: column;
@@ -99,11 +95,21 @@ export default {
       color: $primary-color;
     }
     span {
+      letter-spacing: 2px;
       text-align: center;
       margin-top: 5px;
       font-size: 12px;
       text-decoration: underline;
+      color: #666;
     }
+  }
+
+  .mask {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
   }
 }
 </style>

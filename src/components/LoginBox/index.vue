@@ -14,36 +14,51 @@
           placeholder="密码"
         />
       </div>
-      <button type="submit">登录</button>
+      <button type="submit">{{ tip }}</button>
     </form>
   </div>
 </template>
 
 <script>
+import { validatePhone, validatePassword } from "@/util/regexp";
+
 export default {
   name: "LoginBox",
   data() {
     return {
       phone: "",
       password: "",
+      tip: "登录",
     };
   },
   methods: {
     login() {
-      alert();
+      let { phone, password } = this;
+      if (!validatePhone(phone)) {
+        this.$toast("手机号格式错误");
+        return;
+      }
+      if (!validatePassword(password)) {
+        this.$toast("密码格式错误");
+        return;
+      }
+      this.tip = "登录中";
       this.$store
-        .dispatch("login", {
-          phone: "15954027738",
-          password: "1596321oO",
-        })
+        .dispatch("login", { phone, password })
         .then(
           () => {
             this.$toast("登录成功");
+            this.$router.push("/");
           },
           () => {
             this.$toast("登录失败");
           }
-        );
+        )
+        .finally(() => {
+          this.tip = "登录";
+          this.phone = "";
+          this.password = "";
+        });
     },
   },
 };
@@ -81,6 +96,7 @@ export default {
         color: #999;
       }
       &::before {
+        content: "\e670";
         position: absolute;
         bottom: 6px;
         left: 7px;
@@ -88,14 +104,8 @@ export default {
         line-height: 16px;
         font-size: 16px;
       }
-      &.phone::before {
-        content: "\e670";
-      }
       &.password {
         margin-top: 25px;
-      }
-      &.password::before {
-        content: "\e679";
       }
     }
     button {
