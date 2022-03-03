@@ -41,7 +41,15 @@ const routes = [
         children: [
             {
                 path: 'home',
-                component: () => import('../views/home')
+                component: () => import('../views/home'),
+                children: [
+                    {
+                        path: '/personalized/:id',
+                        name: "Personalized",
+                        component: () => import('@/views/personalized'),
+                        props: true
+                    }
+                ]
             },
             {
                 path: 'rank',
@@ -56,6 +64,10 @@ const routes = [
     {
         path: "/login",
         component: () => import('../views/login')
+    },
+    {
+        path: '*',
+        redirect: '/'
     }
 ]
 

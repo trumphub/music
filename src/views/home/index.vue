@@ -28,12 +28,14 @@
               :item="item"
               v-for="item in personalized"
               :key="item.id"
+              @click.native="toDetail(item)"
             />
           </ul>
           <loading v-if="!personalized.length" />
         </div>
       </div>
     </scroll>
+    <router-view />
   </div>
 </template>
 
@@ -86,6 +88,9 @@ export default {
       this._reqBannerList();
       this._reqIconList();
       this._reqPersonalized();
+    },
+    toDetail({ id }) {
+      this.$router.push({ name: "Personalized", params: { id } });
     },
   },
 };

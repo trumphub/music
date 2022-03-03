@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper" ref="scroll">
+  <div class="wrapper" :style="{ overflow }" ref="scroll">
     <slot></slot>
   </div>
 </template>
@@ -47,6 +47,10 @@ export default {
     scrolling: {
       type: Boolean,
       default: false,
+    },
+    overflow: {
+      type: String,
+      default: "hidden",
     },
   },
   methods: {
@@ -96,6 +100,5 @@ export default {
 <style lang="scss" scoped>
 .wrapper {
   height: 100%;
-  overflow: hidden;
 }
 </style>
