@@ -1,9 +1,7 @@
 <template>
   <div class="layout">
     <my-header @show="open" />
-    <transition name="fade" mode="out-in">
-      <router-view />
-    </transition>
+    <router-view />
     <my-nav />
     <!-- 用户中心 -->
     <user-info v-if="showUserInfo" @close="close" />
@@ -37,7 +35,10 @@ export default {
   },
   watch: {
     $route: {
-      handler() {
+      handler(to, from) {
+        if (to.name === "PlayList" || from.name === "PlayList") {
+          return;
+        }
         this.close();
       },
       deep: true,

@@ -23,7 +23,11 @@
           <div class="play-list" v-if="!!playlist.length">
             <h2>我的歌单{{ playlist.length }}个</h2>
             <ul>
-              <li v-for="item in playlist" :key="item.id">
+              <li
+                v-for="item in playlist"
+                :key="item.id"
+                @click="toPlayList(item.id)"
+              >
                 <img v-lazy="item.coverImgUrl" alt="" />
                 <div>
                   <span v-text="item.name"></span>
@@ -121,6 +125,9 @@ export default {
           this.$router.push({ path: "/" });
         });
       });
+    },
+    toPlayList(id) {
+      this.$router.push({ name: "PlayList", params: { id } });
     },
   },
 };

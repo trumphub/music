@@ -19,7 +19,7 @@
 import list from "@/mixins/list";
 
 export default {
-  name: "Personalized",
+  name: "RankList",
   mixins: [list],
 };
 </script>

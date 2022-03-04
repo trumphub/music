@@ -9,11 +9,13 @@
             :ref="`ref${index}`"
             v-for="(rank, index) in rankList"
             :key="rank.id"
+            @click.native="toRankList(rank.id)"
           />
         </ul>
         <loading v-if="!rankList.length" />
       </div>
     </scroll>
+    <router-view />
   </div>
 </template>
 
@@ -68,6 +70,9 @@ export default {
           i--;
         }
       }
+    },
+    toRankList(id) {
+      this.$router.push({ name: "RankList", params: { id } });
     },
   },
 };

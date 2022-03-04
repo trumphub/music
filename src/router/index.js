@@ -53,11 +53,25 @@ const routes = [
             },
             {
                 path: 'rank',
-                component: () => import('../views/rank')
+                component: () => import('../views/rank'),
+                children: [
+                    {
+                        path: ':id',
+                        name: "RankList",
+                        component: () => import('@/views/rank-list'),
+                        props: true
+                    }
+                ]
             },
             {
                 path: 'singer',
                 component: () => import('../views/singer')
+            },
+            {
+                path: 'play-list/:id',
+                name: 'PlayList',
+                component: () => import('@/views/play-list'),
+                props: true
             }
         ]
     },
