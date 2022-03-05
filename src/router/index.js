@@ -65,7 +65,15 @@ const routes = [
             },
             {
                 path: 'singer',
-                component: () => import('../views/singer')
+                component: () => import('../views/singer'),
+                children: [
+                    {
+                        path: ':id',
+                        name: 'SingerDetail',
+                        component: () => import('@/views/singer-detail'),
+                        props: true
+                    }
+                ]
             },
             {
                 path: 'play-list/:id',

@@ -83,6 +83,9 @@ export default {
     scrollToElement() {
       this.scroll && this.scroll.scrollToElement(...arguments);
     },
+    scrollTo() {
+      this.scroll && this.scroll.scrollTo(...arguments);
+    },
   },
   mounted() {
     this.init();

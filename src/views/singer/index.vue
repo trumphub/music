@@ -12,7 +12,11 @@
         <li ref="listGroup" v-for="(item, index) in list" :key="index">
           <h2>{{ item.key }}</h2>
           <ul class="list">
-            <li v-for="child in item.items" :key="child.id">
+            <li
+              v-for="child in item.items"
+              :key="child.id"
+              @click="toSingerDetail(child.id)"
+            >
               <img v-lazy="child.avatar" alt="" />
               <span>{{ child.name }}</span>
             </li>
@@ -42,6 +46,7 @@
       </div>
       <loading v-if="!list.length" />
     </scroll>
+    <router-view />
   </div>
 </template>
 
@@ -160,6 +165,9 @@ export default {
         idx = this.keyList.length - 1;
       }
       this.$refs.listview.scrollToElement(this.$refs.listGroup[idx], 1000);
+    },
+    toSingerDetail(id) {
+      this.$router.push({ name: "SingerDetail", params: { id } });
     },
   },
   components: {
