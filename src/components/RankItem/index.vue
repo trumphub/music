@@ -1,5 +1,5 @@
 <template>
-  <li class="rank-item">
+  <li class="rank-item" v-waves>
     <img v-lazy="rank.coverImgUrl" alt="" />
     <ul class="rank-song" v-if="rank.tracks">
       <li

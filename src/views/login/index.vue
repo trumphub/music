@@ -7,8 +7,8 @@
     </div>
     <!-- operation -->
     <div class="bottom">
-      <button class="login" @click="login">登录</button>
-      <button class="register" @click="register">注册</button>
+      <button class="login" @click="login" v-waves>登录</button>
+      <button class="register" @click="register" v-waves>注册</button>
       <span @click="$router.replace('/')">游客试用</span>
     </div>
     <div class="mask" @click.self="hideBox" v-show="!!currentComponent"></div>

@@ -18,6 +18,7 @@
           @click="changeTab(tab.idx)"
           class="left"
           :class="{ active: tab.idx === currentTab }"
+          v-waves
         >
           {{ tab.title }}
         </div>
@@ -35,7 +36,12 @@
           <div class="list">
             <!-- 歌曲列表 -->
             <ul class="songs" v-show="currentTab === 0">
-              <li v-for="song in hotSongs" :key="song.id">
+              <li
+                v-for="song in hotSongs"
+                :key="song.id"
+                v-waves
+                @click="handleItemClick(hotSongs, song)"
+              >
                 <div class="left">
                   <img
                     v-lazy="
@@ -102,7 +108,17 @@ export default {
         } = await reqSingerDetail(this.id);
         this.img1v1Url = `url(${img1v1Url})`;
         this.name = name;
-        this.hotSongs = hotSongs;
+        this.hotSongs = hotSongs
+          .filter((item) => item.fee === 8)
+          .map((song) => ({
+            id: song.id,
+            name: song.al.name,
+            singer: song.ar.map((item) => item.name).join(" / "),
+            dt: song.dt,
+            picUrl: song.al.picUrl,
+            status: "stoped",
+            al: { name: song.al.name },
+          }));
         this.briefDesc = briefDesc;
         this.loading = false;
       } catch (error) {
@@ -131,6 +147,17 @@ export default {
       }
       this.currentTab = tab;
       this.$refs.scroll.scrollTo(0, 0);
+    },
+    handleItemClick(list, song) {
+      list = list.map(({ id, name, singer, dt, picUrl, status }) => ({
+        id,
+        name,
+        singer,
+        dt,
+        picUrl,
+        status,
+      }));
+      this.$store.dispatch("addToPlayList", { list, song });
     },
   },
   mounted() {

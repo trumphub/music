@@ -4,6 +4,7 @@
     :title="title"
     :list="list"
     :loading="loading"
+    @handleItemClick="handleItemClick"
   >
     <template v-slot="{ song, $index }">
       <div class="left">{{ $index + 1 }}</div>

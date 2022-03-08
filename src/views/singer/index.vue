@@ -16,6 +16,7 @@
               v-for="child in item.items"
               :key="child.id"
               @click="toSingerDetail(child.id)"
+              v-waves
             >
               <img v-lazy="child.avatar" alt="" />
               <span>{{ child.name }}</span>

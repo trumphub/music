@@ -1,14 +1,14 @@
 <template>
   <div class="nav">
-    <router-link class="left" to="/home">
+    <router-link class="left" to="/home" v-waves>
       <i class="iconfont icon-home"></i>
       <span>首页</span>
     </router-link>
-    <router-link class="center" to="/rank">
+    <router-link class="center" to="/rank" v-waves>
       <i class="iconfont icon-chart-bar"></i>
       <span>排行</span>
     </router-link>
-    <router-link class="right" to="/singer">
+    <router-link class="right" to="/singer" v-waves>
       <i class="iconfont icon-favorite"></i>
       <span>歌手</span>
     </router-link>
@@ -36,6 +36,7 @@ export default {
     align-items: center;
     justify-content: center;
     flex: 1;
+    -webkit-tap-highlight-color: transparent;
     span {
       font-size: 12px;
     }

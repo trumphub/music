@@ -6,7 +6,7 @@
           <rank-item
             :rank="rank"
             :index="index"
-            :ref="`ref${index}`"
+            ref="item"
             v-for="(rank, index) in rankList"
             :key="rank.id"
             @click.native="toRankList(rank.id)"
@@ -44,7 +44,6 @@ export default {
       const { list } = await reqRankList();
       list.forEach((item, index) => {
         this.rankEls.push({
-          ref: `ref${index}`,
           id: item.id,
           index,
         });
@@ -60,8 +59,8 @@ export default {
     },
     scrollEnd() {
       for (let i = 0; i < this.rankEls.length; i++) {
-        const { ref, id, index } = this.rankEls[i];
-        const el = this.$refs[ref][0].$el;
+        const { id, index } = this.rankEls[i];
+        const el = this.$refs.item[index].$el;
         const top = el.getBoundingClientRect().top;
         // 可视区域
         if (top < document.documentElement.clientHeight && top > 0) {

@@ -8,7 +8,7 @@
       <!-- 返回按钮 -->
       <div class="header">
         <i class="iconfont icon-arrow-right" @click="$router.back()"></i>
-        <h2>
+        <h2 ref="h2">
           <span ref="title">{{ title }}</span>
         </h2>
       </div>
@@ -22,7 +22,12 @@
           :probeType="3"
         >
           <ul class="list">
-            <li v-for="(song, index) in list" :key="index">
+            <li
+              @click="$emit('handleItemClick', { list, song, index })"
+              v-for="(song, index) in list"
+              :key="index"
+              v-waves
+            >
               <slot :song="song" :$index="index" />
             </li>
           </ul>
@@ -64,9 +69,14 @@ export default {
   mounted() {
     this.height = this.$refs["header-bg"].offsetHeight * 5;
     this.$refs.title.addEventListener("transitionend", this.reset);
-    this.$nextTick(() => {
-      this.move();
-    });
+    this.h2Width = this.$refs.h2.getBoundingClientRect().width;
+    this.titleWidth = this.$refs.title.getBoundingClientRect().width;
+    if (this.h2Width < this.titleWidth) {
+      this.$nextTick(() => {
+        this.$refs.title.style.display = "block";
+        this.move();
+      });
+    }
   },
   beforeDestroy() {
     this.$refs.title.removeEventListener("transitionend", this.reset);
@@ -83,7 +93,7 @@ export default {
       }
     },
     move() {
-      this.$refs.title.style.transform = "translateX(-100%)";
+      this.$refs.title.style.transform = `translateX(-${this.titleWidth}px)`;
       this.$refs.title.style.transition = "transform 10s linear";
     },
     reset() {
@@ -156,9 +166,6 @@ export default {
       color: #fff;
       white-space: nowrap;
       overflow: hidden;
-      span {
-        display: block;
-      }
     }
   }
 

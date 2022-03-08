@@ -23,10 +23,13 @@ export default {
                 const { songs } = await reqPlaylist(this.id);
                 this.backgroundImage = `url(${coverImgUrl})`;
                 this.title = name;
-                this.list = songs.map((song) => ({
-                    id: song.al.id,
+                this.list = songs.filter(item => item.fee === 8).map((song) => ({
+                    id: song.id,
                     name: song.al.name,
                     singer: song.ar.map((item) => item.name).join(" / "),
+                    picUrl: song.al.picUrl,
+                    dt: song.dt,
+                    status: 'stoped'
                 }));
                 this.loading = false;
             } catch (error) {
@@ -34,6 +37,9 @@ export default {
                 this.loading = false;
             }
         },
+        handleItemClick({ list, song }) {
+            this.$store.dispatch('addToPlayList', { list, song })
+        }
     },
     components: {
         List,

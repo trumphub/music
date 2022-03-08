@@ -1,5 +1,5 @@
 <template>
-  <li class="item-wrapper">
+  <li class="item-wrapper" v-waves>
     <div class="item">
       <div class="pic-wrapper">
         <img v-lazy="item.picUrl" alt="" />

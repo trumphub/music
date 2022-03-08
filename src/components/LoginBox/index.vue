@@ -14,7 +14,7 @@
           placeholder="密码"
         />
       </div>
-      <button type="submit">{{ tip }}</button>
+      <button type="submit" v-waves>{{ tip }}</button>
     </form>
   </div>
 </template>

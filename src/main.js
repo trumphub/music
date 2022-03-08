@@ -6,12 +6,15 @@ import Loading from './components/Loading'
 import router from './router'
 import store from './store'
 import Toast from '@/components/Toast'
+import waves from '@/directive'
 
 Vue.use(VueLazyload, {
   loading: require('./assets/loading.png')
 })
 
 Vue.component(Loading.name, Loading)
+
+Vue.directive('waves', waves)
 
 Vue.prototype.$toast = Toast
 

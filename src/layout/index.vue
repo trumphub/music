@@ -5,6 +5,8 @@
     <my-nav />
     <!-- 用户中心 -->
     <user-info v-if="showUserInfo" @close="close" />
+    <!-- 播放器 -->
+    <player />
   </div>
 </template>
 
@@ -12,6 +14,7 @@
 import MyHeader from "../components/Header";
 import MyNav from "../components/Nav";
 import UserInfo from "@/components/UserInfo";
+import Player from "@/components/Player/index.vue";
 
 export default {
   name: "Layout",
@@ -19,6 +22,7 @@ export default {
     MyHeader,
     MyNav,
     UserInfo,
+    Player,
   },
   methods: {
     open() {

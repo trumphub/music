@@ -33,7 +33,7 @@
         />
         <span @click="_sendCode">{{ btnText }}</span>
       </div>
-      <button type="submit">{{ submitText }}</button>
+      <button type="submit" v-waves>{{ submitText }}</button>
     </form>
   </div>
 </template>

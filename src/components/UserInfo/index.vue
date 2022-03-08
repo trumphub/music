@@ -37,10 +37,10 @@
             </ul>
           </div>
           <loading v-if="loading && info" />
-          <div class="btn" @click="logout" v-if="info">
+          <div class="btn" @click="logout" v-if="info" v-waves>
             <span>注销</span>
           </div>
-          <div class="btn" @click="toLogin" v-else>
+          <div class="btn" @click="toLogin" v-else v-waves>
             <span>登录</span>
           </div>
         </div>
