@@ -23,8 +23,8 @@
       <!-- 中间区域 -->
       <div
         class="middle"
-        @touchstart="middleTouchStart"
-        @touchmove="middleTouchMove"
+        @touchstart.prevent="middleTouchStart"
+        @touchmove.prevent="middleTouchMove"
         @touchend="middleTouchEnd"
       >
         <div class="middle-l" ref="middle-l">
@@ -64,7 +64,7 @@
             <div :style="{ width }" class="current-progress"></div>
             <div
               @touchstart.prevent="btnTouchStart"
-              @touchmove="btnTouchMove"
+              @touchmove.prevent="btnTouchMove"
               @touchend="btnTouchEnd"
               :style="{ transform: `translateX(${width})` }"
               class="progress-btn"

@@ -92,11 +92,11 @@ export default {
     },
     toLogin() {
       this.$emit("close");
-      this.$el.addEventListener("transitionend", () => {
+      setTimeout(() => {
         this.$router.push({
           path: "/login",
         });
-      });
+      }, 500);
     },
     _getUserPlayList(uid) {
       reqUserPlayList(uid)
@@ -121,9 +121,9 @@ export default {
         this.logoutStatus = false;
         this.$emit("close");
         this.$toast("注销成功");
-        this.$el.addEventListener("transitionend", () => {
+        setTimeout(() => {
           this.$router.push({ path: "/" });
-        });
+        }, 500);
       });
     },
     toPlayList(id) {
