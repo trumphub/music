@@ -1,7 +1,9 @@
 <template>
-  <div class="toast">
-    <span>{{ message }}</span>
-  </div>
+  <transition name="fade" appear>
+    <div class="toast">
+      <span>{{ message }}</span>
+    </div>
+  </transition>
 </template>
 
 <script>

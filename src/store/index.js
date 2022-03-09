@@ -15,7 +15,7 @@ const state = {
 
 const getters = {
     currentPlayingSong(state) {
-        return state.playList.find(item => (item.status === 'playing') || (item.status === 'paused'))
+        return state.playList.find(item => (item.status === 'playing') || (item.status === 'paused')) || {}
     }
 }
 
@@ -66,54 +66,124 @@ const actions = {
         return { url, lyric }
     },
     async addToPlayList({ commit, state, getters, dispatch }, { list, song }) {
-        // 将列表放入播放队列
-        const filterList = list.filter(item => {
-            if (state.playList.length > 0) {
-                return state.playList.every(({ id }) => id !== item.id)
-            } else {
-                return true
-            }
-        })
-        const newList = [...cloneDeep(state.playList), ...filterList]
-        // 当前是否有歌曲正在播放
-        if (getters.currentPlayingSong) {
-            // 将要播放的是否为同一首
-            if (getters.currentPlayingSong.id === song.id) {
-                commit('SET_PLAYLIST', newList)
-            } else {
-                // 修改播放状态
-                let currentSong
-                newList.forEach(item => {
-                    if (item.id === getters.currentPlayingSong.id) {
-                        item.status = 'stoped'
-                    } else if (item.id === song.id) {
-                        item.status = 'playing'
-                        currentSong = item
-                    }
-                })
-                if (!currentSong.url) {
-                    dispatch('getSongDetail', song.id).then(({ url, lyric }) => {
-                        currentSong.url = url
-                        currentSong.lyric = lyric
-                        commit('SET_PLAYLIST', newList)
-                    })
+        return new Promise((resolve) => {
+            // 将列表放入播放队列
+            const filterList = list.filter(item => {
+                if (state.playList.length > 0) {
+                    return state.playList.every(({ id }) => id !== item.id)
                 } else {
-                    commit('SET_PLAYLIST', newList)
-                }
-            }
-        } else {
-            // 修改播放状态 
-            newList.forEach(item => {
-                if (item.id === song.id) {
-                    item.status = 'playing'
-                    dispatch('getSongDetail', song.id).then(({ url, lyric }) => {
-                        item.url = url
-                        item.lyric = lyric
-                        commit('SET_PLAYLIST', newList)
-                    })
+                    return true
                 }
             })
+            const newList = [...cloneDeep(state.playList), ...filterList]
+            // 当前是否有歌曲正在播放
+            if (getters.currentPlayingSong) {
+                // 将要播放的是否为同一首
+                if (getters.currentPlayingSong.id === song.id) {
+                    commit('SET_PLAYLIST', newList)
+                    resolve()
+                } else {
+                    // 修改播放状态
+                    let currentSong
+                    newList.forEach(item => {
+                        if (item.id === getters.currentPlayingSong.id) {
+                            item.status = 'stoped'
+                        } else if (item.id === song.id) {
+                            item.status = 'playing'
+                            currentSong = item
+                        }
+                    })
+                    if (!currentSong.url) {
+                        dispatch('getSongDetail', song.id).then(({ url, lyric }) => {
+                            currentSong.url = url
+                            currentSong.lyric = lyric
+                            commit('SET_PLAYLIST', newList)
+                            resolve()
+                        })
+                    } else {
+                        commit('SET_PLAYLIST', newList)
+                        resolve()
+                    }
+                }
+            } else {
+                // 修改播放状态 
+                newList.forEach(item => {
+                    if (item.id === song.id) {
+                        item.status = 'playing'
+                        dispatch('getSongDetail', song.id).then(({ url, lyric }) => {
+                            item.url = url
+                            item.lyric = lyric
+                            commit('SET_PLAYLIST', newList)
+                            resolve()
+                        })
+                    }
+                })
+            }
+        })
+    },
+    updateSongStatus({ state, commit }) {
+        let status
+        const newList = cloneDeep(state.playList)
+        newList.forEach(song => {
+            if (song.status === 'playing') {
+                song.status = 'paused'
+                status = 'paused'
+            } else if (song.status === 'paused') {
+                song.status = 'playing'
+                status = 'playing'
+            }
+        })
+        commit('SET_PLAYLIST', newList)
+        return status
+    },
+    nextSong({ state, commit, dispatch }, flag) {
+        dispatch('pausedCurrentSong')
+        const newList = cloneDeep(state.playList)
+        // 上一首
+        const idx = newList.findIndex(song => song.status === 'playing' || song.status === 'paused')
+        // 当前
+        let index
+        if (flag === 'next') {
+            index = idx + 1
+            if (index >= newList.length) {
+                index = 0
+            }
         }
+        if (flag === 'prev') {
+            index = idx - 1
+            if (index < 0) {
+                index = newList.length - 1
+            }
+        }
+        let newSong
+        newList.forEach((song, i) => {
+            if (i === idx) {
+                song.status = 'stoped'
+            } else if (i === index) {
+                song.status = 'playing'
+                newSong = song
+            }
+        })
+        if (!newSong.url) {
+            dispatch('getSongDetail', newSong.id).then(({ url, lyric }) => {
+                newSong.url = url
+                newSong.lyric = lyric
+                commit('SET_PLAYLIST', newList)
+            })
+        } else {
+            commit('SET_PLAYLIST', newList)
+        }
+    },
+    pausedCurrentSong({ state, commit }) {
+        const newList = cloneDeep(state.playList)
+        // 上一首
+        const idx = newList.findIndex(song => song.status === 'playing' || song.status === 'paused')
+        newList.forEach((song, i) => {
+            if (i === idx) {
+                song.status = 'paused'
+            }
+        })
+        commit('SET_PLAYLIST', newList)
     }
 }
 

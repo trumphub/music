@@ -9,7 +9,7 @@ export function reqSongUrl(id) {
     return request.get(
         '/song/url',
         {
-            params: { id }
+            params: { id, realIP: '116.25.146.177' }
         }
     )
 }
@@ -23,7 +23,7 @@ export function reqSongLyric(id) {
     return request.get(
         '/lyric',
         {
-            params: { id }
+            params: { id, realIP: '116.25.146.177' }
         }
     )
 }

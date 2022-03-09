@@ -112,7 +112,7 @@ export default {
           .filter((item) => item.fee === 8)
           .map((song) => ({
             id: song.id,
-            name: song.al.name,
+            name: song.name,
             singer: song.ar.map((item) => item.name).join(" / "),
             dt: song.dt,
             picUrl: song.al.picUrl,
@@ -157,7 +157,10 @@ export default {
         picUrl,
         status,
       }));
-      this.$store.dispatch("addToPlayList", { list, song });
+      this.loading = true;
+      this.$store.dispatch("addToPlayList", { list, song }).then(() => {
+        this.loading = false;
+      });
     },
   },
   mounted() {
