@@ -184,6 +184,28 @@ const actions = {
             }
         })
         commit('SET_PLAYLIST', newList)
+    },
+    playcurrentSong({ state, commit, getters, dispatch }, nextSong) {
+        const newList = cloneDeep(state.playList)
+        const prevSong = getters.currentPlayingSong
+        let temp
+        newList.forEach(item => {
+            if (item.id === nextSong.id) {
+                item.status = 'playing'
+                temp = item
+            } else if (item.id === prevSong.id) {
+                item.status = "stoped"
+            }
+        })
+        if (!temp.url) {
+            dispatch('getSongDetail', temp.id).then(({ url, lyric }) => {
+                temp.url = url
+                temp.lyric = lyric
+                commit('SET_PLAYLIST', newList)
+            })
+        } else {
+            commit('SET_PLAYLIST', newList)
+        }
     }
 }
 

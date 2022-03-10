@@ -1,105 +1,107 @@
 <template>
   <div v-show="!!playList.length">
     <!-- 全屏模式 -->
-    <div class="full-player" v-show="currentPlayingSong && playerMode === 0">
-      <!-- 背景 -->
-      <div class="background">
-        <img :src="currentPlayingSong.picUrl" alt="" />
-      </div>
-      <!-- 头部 -->
-      <div class="top">
-        <div class="left" @click="playerMode = 1">
-          <i class="iconfont icon-arrow-right"></i>
+    <transition name="fade-cd">
+      <div class="full-player" v-show="currentPlayingSong && playerMode === 0">
+        <!-- 背景 -->
+        <div class="background">
+          <img :src="currentPlayingSong.picUrl" alt="" />
         </div>
-        <div class="center">
-          <span>{{ currentPlayingSong.name }}</span>
-        </div>
-        <div class="right">
-          <i class="iconfont icon-elipsis"></i>
-        </div>
-      </div>
-      <!-- 歌手名 -->
-      <div class="singer-name">{{ currentPlayingSong.singer }}</div>
-      <!-- 中间区域 -->
-      <div
-        class="middle"
-        @touchstart.prevent="middleTouchStart"
-        @touchmove.prevent="middleTouchMove"
-        @touchend="middleTouchEnd"
-      >
-        <div class="middle-l" ref="middle-l">
-          <!-- 封面 -->
-          <div class="cd">
-            <img
-              :class="{ playing: songStatus === 'playing' }"
-              :src="currentPlayingSong.picUrl"
-              alt=""
-            />
+        <!-- 头部 -->
+        <div class="top">
+          <div class="left" @click="playerMode = 1">
+            <i class="iconfont icon-arrow-right"></i>
           </div>
-          <!-- 歌词 -->
-          <div class="lyric">
-            <span>{{ cureentlyric.content }}</span>
+          <div class="center">
+            <span>{{ currentPlayingSong.name }}</span>
+          </div>
+          <div class="right">
+            <i class="iconfont icon-elipsis"></i>
           </div>
         </div>
-        <div class="middle-r" ref="middle-r">
-          <Scroll :data="lyric" ref="scroll">
-            <div ref="contents">
-              <p
-                ref="p"
-                v-for="(item, index) in lyric"
-                :key="index"
-                :class="{ current: cureentlyric.index === index }"
-              >
-                {{ item.content }}
-              </p>
+        <!-- 歌手名 -->
+        <div class="singer-name">{{ currentPlayingSong.singer }}</div>
+        <!-- 中间区域 -->
+        <div
+          class="middle"
+          @touchstart.prevent="middleTouchStart"
+          @touchmove.prevent="middleTouchMove"
+          @touchend="middleTouchEnd"
+        >
+          <div class="middle-l" ref="middle-l">
+            <!-- 封面 -->
+            <div class="cd">
+              <img
+                :class="{ playing: songStatus === 'playing' }"
+                :src="currentPlayingSong.picUrl"
+                alt=""
+              />
             </div>
-          </Scroll>
+            <!-- 歌词 -->
+            <div class="lyric">
+              <span>{{ cureentlyric.content }}</span>
+            </div>
+          </div>
+          <div class="middle-r" ref="middle-r">
+            <Scroll :data="lyric" ref="scroll">
+              <div ref="contents">
+                <p
+                  ref="p"
+                  v-for="(item, index) in lyric"
+                  :key="index"
+                  :class="{ current: cureentlyric.index === index }"
+                >
+                  {{ item.content }}
+                </p>
+              </div>
+            </Scroll>
+          </div>
+        </div>
+        <!-- 底部 -->
+        <div class="footer">
+          <div class="progress-wrapper">
+            <div class="cureentTime">{{ currentTime | formatTime }}</div>
+            <div class="progress" ref="progress" @click="progressClick">
+              <div :style="{ width }" class="current-progress"></div>
+              <div
+                @touchstart.prevent="btnTouchStart"
+                @touchmove.prevent="btnTouchMove"
+                @touchend="btnTouchEnd"
+                :style="{ transform: `translateX(${width})` }"
+                class="progress-btn"
+              ></div>
+            </div>
+            <div class="allTime">{{ currentPlayingSong.dt | formatTime }}</div>
+          </div>
+          <div class="operators">
+            <div v-waves class="mode" @click="updatePlayMode">
+              <i v-show="mode === 0" class="iconfont icon-danquxunhuan"></i>
+              <i v-show="mode === 1" class="iconfont icon-xunhuanbofang"></i>
+            </div>
+            <div v-waves class="pre" @click="prev">
+              <i class="iconfont icon-shangyishou_huaban"></i>
+            </div>
+            <div v-waves class="status" @click="_updateSongStatus">
+              <i
+                v-show="songStatus === 'playing'"
+                class="iconfont icon-24gf-pauseCircle"
+              ></i>
+              <i
+                v-show="songStatus === 'paused'"
+                class="iconfont icon-24gf-playCircle"
+              ></i>
+            </div>
+            <div v-waves class="next" @click="next">
+              <i class="iconfont icon-xiayishou_huaban"></i>
+            </div>
+            <div v-waves class="favo">
+              <i class="iconfont icon-fabulous"></i>
+            </div>
+          </div>
         </div>
       </div>
-      <!-- 底部 -->
-      <div class="footer">
-        <div class="progress-wrapper">
-          <div class="cureentTime">{{ currentTime | formatTime }}</div>
-          <div class="progress" ref="progress" @click="progressClick">
-            <div :style="{ width }" class="current-progress"></div>
-            <div
-              @touchstart.prevent="btnTouchStart"
-              @touchmove.prevent="btnTouchMove"
-              @touchend="btnTouchEnd"
-              :style="{ transform: `translateX(${width})` }"
-              class="progress-btn"
-            ></div>
-          </div>
-          <div class="allTime">{{ currentPlayingSong.dt | formatTime }}</div>
-        </div>
-        <div class="operators">
-          <div v-waves class="mode" @click="updatePlayMode">
-            <i v-show="mode === 0" class="iconfont icon-danquxunhuan"></i>
-            <i v-show="mode === 1" class="iconfont icon-xunhuanbofang"></i>
-          </div>
-          <div v-waves class="pre" @click="prev">
-            <i class="iconfont icon-shangyishou_huaban"></i>
-          </div>
-          <div v-waves class="status" @click="_updateSongStatus">
-            <i
-              v-show="songStatus === 'playing'"
-              class="iconfont icon-24gf-pauseCircle"
-            ></i>
-            <i
-              v-show="songStatus === 'paused'"
-              class="iconfont icon-24gf-playCircle"
-            ></i>
-          </div>
-          <div v-waves class="next" @click="next">
-            <i class="iconfont icon-xiayishou_huaban"></i>
-          </div>
-          <div v-waves class="favo">
-            <i class="iconfont icon-fabulous"></i>
-          </div>
-        </div>
-      </div>
-    </div>
-
+    </transition>
+    <!-- 迷你模式 -->
     <div
       v-waves
       @click="playerMode = 0"
@@ -133,6 +135,32 @@
         </div>
       </div>
     </div>
+    <!-- 播放列表 -->
+    <transition name="bottom">
+      <div class="play-list" @click.self="showList = false" v-show="showList">
+        <div class="list-wrap">
+          <div class="list">
+            <Scroll :data="filterPlayList" ref="playListScroll">
+              <ul>
+                <li
+                  @click="_playCurrentSong(song)"
+                  v-waves
+                  v-for="song in filterPlayList"
+                  :key="song.id"
+                  :class="{ current: song.id === currentPlayingSong.id }"
+                >
+                  <span>{{ song.name }}</span>
+                  <div class="del" @click.stop="del(song)">
+                    <i class="iconfont icon-download"></i>
+                  </div>
+                </li>
+              </ul>
+            </Scroll>
+          </div>
+          <button v-waves @click="_clearPlayList">清空</button>
+        </div>
+      </div>
+    </transition>
     <audio
       ref="audio"
       @timeupdate="timeupdate"
@@ -145,7 +173,7 @@
 
 <script>
 import Scroll from "@/components/Scroll";
-import { mapState, mapGetters } from "vuex";
+import { mapState, mapGetters, mapMutations } from "vuex";
 
 export default {
   name: "Player",
@@ -161,11 +189,19 @@ export default {
       loading: false,
       cureentlyric: { content: "", index: -1 },
       playerMode: 0, // 0 全屏 1 迷你
+      showList: false,
     };
   },
   computed: {
     ...mapState(["playList"]),
     ...mapGetters(["currentPlayingSong"]),
+    filterPlayList() {
+      if (this.showList) {
+        return this.playList;
+      } else {
+        return [];
+      }
+    },
     lyric() {
       if (!this.currentPlayingSong.lyric) {
         return [];
@@ -202,7 +238,9 @@ export default {
     Scroll,
   },
   methods: {
-    showAllList() {},
+    showAllList() {
+      this.showList = true;
+    },
     getCureentlyric(currentTime) {
       let cureentlyric = {};
       if (this.lyric.length === 0) {
@@ -376,11 +414,35 @@ export default {
       }
       this.$refs.scroll.scrollTo(0, offsetY, 1000);
     },
+    _clearPlayList() {
+      this.$refs.audio.pause();
+      this.currentTime = 0;
+      this.mode = 0;
+      this.playerMode = 0;
+      this.showList = false;
+      this.SET_PLAYLIST([]);
+    },
+    _playCurrentSong(song) {
+      if (song.id === this.currentPlayingSong.id) {
+        return;
+      }
+      if (!song.url) {
+        this.loading = true;
+      }
+      this.$refs.audio.pause();
+      this.$store.dispatch("playcurrentSong", song);
+    },
+    del(song) {
+      console.log(song);
+    },
+    ...mapMutations(["SET_PLAYLIST"]),
   },
   watch: {
     "currentPlayingSong.url"(url) {
-      this.$refs.audio.src = url;
-      this.$refs.audio.play();
+      if (url) {
+        this.$refs.audio.src = url;
+        this.$refs.audio.play();
+      }
     },
     currentTime(currentTime) {
       this.cureentlyric = this.getCureentlyric(currentTime);
@@ -390,7 +452,9 @@ export default {
       });
     },
     "cureentlyric.index"(index) {
-      this.lyricToCenter(index);
+      if (index !== -1) {
+        this.lyricToCenter(index);
+      }
     },
   },
   filters: {
@@ -407,6 +471,68 @@ export default {
 <style lang="scss" scoped>
 @import "@/styles/variables.scss";
 
+.play-list {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100;
+  background-color: rgba(0, 0, 0, 0.3);
+  .list-wrap {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 50vh;
+    background-color: #fff;
+    .list {
+      flex: 1;
+      overflow: hidden;
+      ul {
+        padding: 5px 0;
+      }
+      li {
+        padding: 5px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        span {
+          font-size: 12px;
+          line-height: 12px;
+          flex: 1;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          padding-right: 20px;
+        }
+        .del {
+          flex: none;
+          width: 30px;
+          height: 30px;
+          display: flex;
+          .iconfont {
+            margin: auto;
+            font-size: 12px;
+            line-height: 12px;
+          }
+        }
+        &.current {
+          background-color: #eee;
+        }
+      }
+    }
+    button {
+      height: 40px;
+      border: none;
+      color: #fff;
+      font-size: 14px;
+      background-color: #999;
+    }
+  }
+}
 .mini-player {
   display: flex;
   justify-content: space-between;
@@ -676,5 +802,40 @@ export default {
 }
 audio {
   display: none;
+}
+.bottom-enter,
+.bottom-leave-to {
+  opacity: 0;
+  .list-wrap {
+    transform: translateY(100%);
+  }
+}
+
+.bottom-enter-active,
+.bottom-leave-active {
+  transition: opacity 0.3s;
+  .list-wrap {
+    transition: transform 0.3s;
+  }
+}
+
+.fade-cd-enter,
+.fade-cd-leave-to {
+  opacity: 0;
+}
+.fade-cd-enter {
+  .cd {
+    transform: translate(-30vw, 30vh) scale(0);
+  }
+}
+
+.fade-cd-enter-active,
+.fade-cd-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-cd-enter-active {
+  .cd {
+    transition: transform 0.3s;
+  }
 }
 </style>
