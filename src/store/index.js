@@ -68,7 +68,7 @@ const actions = {
     async addToPlayList({ commit, state, getters, dispatch }, { list, song }) {
         return new Promise((resolve) => {
             // 将列表放入播放队列
-            const filterList = list.filter(item => {
+            const filterList = cloneDeep(list).filter(item => {
                 if (state.playList.length > 0) {
                     return state.playList.every(({ id }) => id !== item.id)
                 } else {
@@ -205,6 +205,35 @@ const actions = {
             })
         } else {
             commit('SET_PLAYLIST', newList)
+        }
+    },
+    delSong({ state, commit, getters, dispatch }, song) {
+        let newList = cloneDeep(state.playList)
+        if (getters.currentPlayingSong.id === song.id) {
+            let idx = newList.findIndex((item) => item.id === song.id)
+            let nextIdx = idx + 1
+            if (nextIdx === newList.length) {
+                nextIdx -= 2
+            }
+            let nextSong
+            newList.forEach((item, index) => {
+                if (index === nextIdx) {
+                    item.status = 'playing'
+                    nextSong = item
+                }
+            })
+            newList.splice(idx, 1)
+            if (!nextSong.url) {
+                dispatch('getSongDetail', nextSong.id).then(({ url, lyric }) => {
+                    nextSong.url = url
+                    nextSong.lyric = lyric
+                    commit('SET_PLAYLIST', newList)
+                })
+            } else {
+                commit('SET_PLAYLIST', newList)
+            }
+        } else {
+            commit('SET_PLAYLIST', newList.filter(item => item.id !== song.id))
         }
     }
 }

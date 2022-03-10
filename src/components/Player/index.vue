@@ -2,7 +2,7 @@
   <div v-show="!!playList.length">
     <!-- 全屏模式 -->
     <transition name="fade-cd">
-      <div class="full-player" v-show="currentPlayingSong && playerMode === 0">
+      <div class="full-player" v-show="playerMode === 0">
         <!-- 背景 -->
         <div class="background">
           <img :src="currentPlayingSong.picUrl" alt="" />
@@ -106,7 +106,7 @@
       v-waves
       @click="playerMode = 0"
       class="mini-player"
-      v-show="currentPlayingSong && playerMode === 1"
+      v-show="playerMode === 1"
     >
       <div class="left">
         <img
@@ -143,6 +143,7 @@
             <Scroll :data="filterPlayList" ref="playListScroll">
               <ul>
                 <li
+                  ref="song-list-item"
                   @click="_playCurrentSong(song)"
                   v-waves
                   v-for="song in filterPlayList"
@@ -151,7 +152,7 @@
                 >
                   <span>{{ song.name }}</span>
                   <div class="del" @click.stop="del(song)">
-                    <i class="iconfont icon-download"></i>
+                    <i class="iconfont icon-shanchu"></i>
                   </div>
                 </li>
               </ul>
@@ -188,7 +189,7 @@ export default {
       mode: 0, //0 单曲循环 1 循环播放
       loading: false,
       cureentlyric: { content: "", index: -1 },
-      playerMode: 0, // 0 全屏 1 迷你
+      playerMode: -1, // 0 全屏 1 迷你
       showList: false,
     };
   },
@@ -414,11 +415,19 @@ export default {
       }
       this.$refs.scroll.scrollTo(0, offsetY, 1000);
     },
+    currentToTop() {
+      const idx = this.filterPlayList.findIndex(
+        (item) => item.id === this.currentPlayingSong.id
+      );
+      this.$refs.playListScroll.scrollToElement(
+        this.$refs["song-list-item"][idx]
+      );
+    },
     _clearPlayList() {
       this.$refs.audio.pause();
       this.currentTime = 0;
       this.mode = 0;
-      this.playerMode = 0;
+      this.playerMode = -1;
       this.showList = false;
       this.SET_PLAYLIST([]);
     },
@@ -433,7 +442,15 @@ export default {
       this.$store.dispatch("playcurrentSong", song);
     },
     del(song) {
-      console.log(song);
+      if (this.filterPlayList.length === 1) {
+        this._clearPlayList();
+        return;
+      }
+      if (song.id === this.currentPlayingSong.id) {
+        this.loading = true;
+        this.$refs.audio.pause();
+      }
+      this.$store.dispatch("delSong", song);
     },
     ...mapMutations(["SET_PLAYLIST"]),
   },
@@ -442,6 +459,14 @@ export default {
       if (url) {
         this.$refs.audio.src = url;
         this.$refs.audio.play();
+        if (this.playerMode === -1) {
+          this.playerMode = 0;
+        }
+      }
+    },
+    filterPlayList(v) {
+      if (v.length) {
+        setTimeout(this.currentToTop, 100);
       }
     },
     currentTime(currentTime) {
