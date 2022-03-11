@@ -1,5 +1,8 @@
 <template>
-  <div v-show="!!playList.length">
+  <div
+    v-show="!!playList.length"
+    style="position: fixed; width: 100%; z-index: 100; bottom: 0"
+  >
     <!-- 全屏模式 -->
     <transition name="fade-cd">
       <div class="full-player" v-show="playerMode === 0">
@@ -103,6 +106,10 @@
     </transition>
     <!-- 迷你模式 -->
     <div
+      ref="mini-player"
+      @touchstart="miniTouchStart"
+      @touchmove="miniTouchMove"
+      @touchend="miniTouchEnd"
       v-waves
       @click="playerMode = 0"
       class="mini-player"
@@ -182,12 +189,13 @@ export default {
     return {
       touch: {},
       btnTouch: {},
+      miniTouch: {},
       // 当前时间
       currentTime: 0,
       // 当前进度条
       width: 0,
       mode: 0, //0 单曲循环 1 循环播放
-      loading: true,
+      loading: false,
       cureentlyric: { content: "", index: -1 },
       playerMode: -1, // 0 全屏 1 迷你
       showList: false,
@@ -239,6 +247,28 @@ export default {
     Scroll,
   },
   methods: {
+    miniTouchStart(e) {
+      const touch = e.touches[0];
+      this.miniTouch.startY = touch.clientY;
+      const { top, height } = this.$refs["mini-player"].getBoundingClientRect();
+      this.miniTouch.top = top;
+      this.miniTouch.height = height;
+    },
+    miniTouchMove(e) {
+      const touch = e.touches[0];
+      const deltaY = touch.clientY - this.miniTouch.startY;
+      let top = this.miniTouch.top + deltaY;
+      if (top < 0) {
+        top = 0;
+      }
+      if (top > document.documentElement.clientHeight - this.miniTouch.height) {
+        top = document.documentElement.clientHeight - this.miniTouch.height;
+      }
+      this.$refs["mini-player"].style.top = `${top}px`;
+    },
+    miniTouchEnd() {
+      this.miniTouch = {};
+    },
     showAllList() {
       this.showList = true;
     },
@@ -385,11 +415,9 @@ export default {
       this.$toast(this.mode === 0 ? "单曲循环" : "循环播放");
     },
     next() {
-      this.loading = true;
       this.$store.dispatch("nextSong", "next");
     },
     prev() {
-      this.loading = true;
       this.$store.dispatch("nextSong", "prev");
     },
     ready() {
@@ -454,18 +482,21 @@ export default {
         if (id === oldId) {
           return;
         }
-        this.$refs.audio.pause();
-        this.$refs.audio.src = "";
-        this.currentTime = 0;
-        if (url) {
-          this.$refs.audio.src = url;
-          this.$refs.audio.play();
-        } else {
-          this.$store.dispatch("getSongDetail", id).then((url) => {
+        setTimeout(() => {
+          this.loading = true;
+          this.$refs.audio.pause();
+          this.$refs.audio.src = "";
+          this.currentTime = 0;
+          if (url) {
             this.$refs.audio.src = url;
             this.$refs.audio.play();
-          });
-        }
+          } else {
+            this.$store.dispatch("getSongDetail", id).then((url) => {
+              this.$refs.audio.src = url;
+              this.$refs.audio.play();
+            });
+          }
+        }, 500);
       }
     },
     filterPlayList(v) {
@@ -566,7 +597,7 @@ export default {
   display: flex;
   justify-content: space-between;
   padding: 0 20px;
-  position: fixed;
+  position: fixed !important;
   left: 0;
   right: 0;
   bottom: 0;
