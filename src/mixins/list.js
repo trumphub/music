@@ -38,10 +38,7 @@ export default {
             }
         },
         handleItemClick({ list, song }) {
-            this.loading = true;
-            this.$store.dispatch('addToPlayList', { list, song }).then(() => {
-                this.loading = false;
-            })
+            this.$store.dispatch('addToPlayList', { list, song })
         }
     },
     components: {

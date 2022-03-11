@@ -187,7 +187,7 @@ export default {
       // 当前进度条
       width: 0,
       mode: 0, //0 单曲循环 1 循环播放
-      loading: false,
+      loading: true,
       cureentlyric: { content: "", index: -1 },
       playerMode: -1, // 0 全屏 1 迷你
       showList: false,
@@ -386,12 +386,10 @@ export default {
     },
     next() {
       this.loading = true;
-      this.$refs.audio.pause();
       this.$store.dispatch("nextSong", "next");
     },
     prev() {
       this.loading = true;
-      this.$refs.audio.pause();
       this.$store.dispatch("nextSong", "prev");
     },
     ready() {
@@ -425,6 +423,7 @@ export default {
     },
     _clearPlayList() {
       this.$refs.audio.pause();
+      this.$refs.audio.src = "";
       this.currentTime = 0;
       this.mode = 0;
       this.playerMode = -1;
@@ -435,10 +434,6 @@ export default {
       if (song.id === this.currentPlayingSong.id) {
         return;
       }
-      if (!song.url) {
-        this.loading = true;
-      }
-      this.$refs.audio.pause();
       this.$store.dispatch("playcurrentSong", song);
     },
     del(song) {
@@ -446,21 +441,30 @@ export default {
         this._clearPlayList();
         return;
       }
-      if (song.id === this.currentPlayingSong.id) {
-        this.loading = true;
-        this.$refs.audio.pause();
-      }
       this.$store.dispatch("delSong", song);
     },
     ...mapMutations(["SET_PLAYLIST"]),
   },
   watch: {
-    "currentPlayingSong.url"(url) {
-      if (url) {
-        this.$refs.audio.src = url;
-        this.$refs.audio.play();
+    currentPlayingSong({ id, url }, { id: oldId }) {
+      if (id) {
         if (this.playerMode === -1) {
           this.playerMode = 0;
+        }
+        if (id === oldId) {
+          return;
+        }
+        this.$refs.audio.pause();
+        this.$refs.audio.src = "";
+        this.currentTime = 0;
+        if (url) {
+          this.$refs.audio.src = url;
+          this.$refs.audio.play();
+        } else {
+          this.$store.dispatch("getSongDetail", id).then((url) => {
+            this.$refs.audio.src = url;
+            this.$refs.audio.play();
+          });
         }
       }
     },

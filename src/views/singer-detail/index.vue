@@ -157,10 +157,7 @@ export default {
         picUrl,
         status,
       }));
-      this.loading = true;
-      this.$store.dispatch("addToPlayList", { list, song }).then(() => {
-        this.loading = false;
-      });
+      this.$store.dispatch("addToPlayList", { list, song });
     },
   },
   mounted() {
