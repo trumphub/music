@@ -48,7 +48,7 @@ export default {
         .then(
           () => {
             this.$toast("登录成功");
-            this.$router.push("/");
+            this.$router.push(this.$route.query.redirect || "/");
           },
           () => {
             this.$toast("登录失败");

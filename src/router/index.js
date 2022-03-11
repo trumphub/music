@@ -48,6 +48,13 @@ const routes = [
                         name: "Personalized",
                         component: () => import('@/views/personalized'),
                         props: true
+                    },
+                    {
+                        path: '/recommend',
+                        component: () => import('@/views/recommend'),
+                        meta: {
+                            isAuth: true
+                        }
                     }
                 ]
             },
@@ -80,7 +87,11 @@ const routes = [
                 name: 'PlayList',
                 component: () => import('@/views/play-list'),
                 props: true
-            }
+            },
+            {
+                path: '/search',
+                component: () => import('@/views/search')
+            },
         ]
     },
     {

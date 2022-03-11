@@ -6,7 +6,7 @@
     <div class="center">
       <span>网易云音乐</span>
     </div>
-    <div class="right">
+    <div class="right" @click="$emit('search')">
       <i class="iconfont icon-search"></i>
     </div>
   </div>

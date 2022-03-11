@@ -8,7 +8,7 @@
             <router-link
               v-for="item in iconList"
               :key="item.id"
-              to="/rank"
+              :to="item.path"
               class="tab-item"
             >
               <div
@@ -60,6 +60,7 @@ export default {
         id: i,
         iconUrl: "",
         name: "",
+        path: "",
       });
     }
     return {
@@ -78,7 +79,14 @@ export default {
     },
     async _reqIconList() {
       const { data } = await reqIconList();
-      this.iconList = data;
+      this.iconList = data.map((item) => {
+        if (item.name === "排行榜") {
+          item.path = "/rank";
+        } else {
+          item.path = "/recommend";
+        }
+        return item;
+      });
     },
     async _reqPersonalized() {
       const { result } = await reqPersonalized();

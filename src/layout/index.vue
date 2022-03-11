@@ -1,8 +1,12 @@
 <template>
   <div class="layout">
-    <my-header @show="open" />
+    <my-header
+      @show="open"
+      @search="$router.push('/search')"
+      v-show="$route.path !== '/search'"
+    />
     <router-view />
-    <my-nav />
+    <my-nav v-show="$route.path !== '/search'" />
     <!-- 用户中心 -->
     <user-info v-if="showUserInfo" @close="close" />
     <!-- 播放器 -->
