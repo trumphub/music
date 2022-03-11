@@ -66,18 +66,6 @@ export default {
       opacity: 0,
     };
   },
-  mounted() {
-    this.height = this.$refs["header-bg"].offsetHeight * 5;
-    this.$refs.title.addEventListener("transitionend", this.reset);
-    this.h2Width = this.$refs.h2.getBoundingClientRect().width;
-    this.titleWidth = this.$refs.title.getBoundingClientRect().width;
-    if (this.h2Width < this.titleWidth) {
-      this.$nextTick(() => {
-        this.$refs.title.style.display = "block";
-        this.move();
-      });
-    }
-  },
   beforeDestroy() {
     this.$refs.title.removeEventListener("transitionend", this.reset);
   },
@@ -104,6 +92,20 @@ export default {
   },
   components: {
     Scroll,
+  },
+  watch: {
+    loading() {
+      this.$nextTick(() => {
+        this.height = this.$refs["header-bg"].offsetHeight * 5;
+        this.$refs.title.addEventListener("transitionend", this.reset);
+        this.h2Width = this.$refs.h2.getBoundingClientRect().width;
+        this.titleWidth = this.$refs.title.getBoundingClientRect().width;
+        if (this.h2Width < this.titleWidth) {
+          this.$refs.title.style.display = "block";
+          this.move();
+        }
+      });
+    },
   },
 };
 </script>
